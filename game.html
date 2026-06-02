@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игра | Последний полив</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <div class="theme-switch-wrapper">
+        <span>🌞</span>
+        <label class="theme-switch">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider round"></span>
+        </label>
+        <span>🌙</span>
+    </div>
+    
+    <!-- Панель управления музыкой -->
+    <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; padding: 8px 16px; background: var(--card-bg); clip-path: polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px);">
+        <a href="index.html" class="nav-link">← В сад</a>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span>🎵</span>
+            <label class="theme-switch" style="width: 40px;">
+                <input type="checkbox" id="music-toggle">
+                <span class="slider round"></span>
+            </label>
+            <span>🔇</span>
+            <span>🔊</span>
+            <input type="range" id="volume-slider" min="0" max="100" value="50" style="width: 100px;">
+            <span id="volume-value">50%</span>
+        </div>
+        <a href="achievements.html" class="nav-link">🏆 Достижения</a>
+    </div>
+    
+    <h2 style="text-align:center;">🌼 Поливай цветок знаниями 🌼</h2>
+    
+    <div class="game-layout">
+        <div class="flower-area">
+            <div id="flower-emoji">🌻</div>
+            <div id="petals-count">Лепестков: 5</div>
+            <div id="combo-indicator" style="margin-top:10px;"></div>
+            <button id="hint-button" class="hint-btn" style="margin-top: 12px;">💡 Подсказка (3)</button>
+        </div>
+        <div>
+            <div class="stats">
+                <span>🎯 Счёт: <span id="score">100</span></span>
+                <span>❌ Ошибки: <span id="mistakes">0</span></span>
+                <span>⭐ Комбо: <span id="combo">0</span></span>
+            </div>
+            <div class="word-mask" id="word-mask">_ _ _ _ _</div>
+            <div class="keyboard" id="keyboard"></div>
+            <div class="action-buttons">
+                <button id="guess-word-btn">📝 Угадать слово целиком</button>
+                <button id="reset-game-btn">🔄 Новая игра</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="music.js"></script>
+<script src="words.js"></script>
+<script src="game.js"></script>
+
+<script>
+    // Инициализация музыки для game.html (sound.mp3)
+    const music = initPageMusic('sound.mp3', 'game_music');
+    console.log('Music initialized on game page');
+</script>
+</body>
+</html>

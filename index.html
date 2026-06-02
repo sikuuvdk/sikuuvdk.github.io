@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Последний полив | Сад слов</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="theme-switch-wrapper">
+            <span>🌞</span>
+            <label class="theme-switch">
+                <input type="checkbox" id="theme-toggle">
+                <span class="slider round"></span>
+            </label>
+            <span>🌙</span>
+        </div>
+
+        <!-- Панель управления музыкой -->
+        <div style="display: flex; justify-content: flex-end; align-items: center; gap: 15px; margin-bottom: 20px; padding: 8px 16px; background: var(--card-bg); clip-path: polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px);">
+            <span>🎵</span>
+            <label class="theme-switch" style="width: 40px;">
+                <input type="checkbox" id="music-toggle">
+                <span class="slider round"></span>
+            </label>
+            <span>🔇</span>
+            <span style="margin-left: 10px;">🔊</span>
+            <input type="range" id="volume-slider" min="0" max="100" value="50" style="width: 100px;">
+            <span id="volume-value">50%</span>
+        </div>
+
+        <div class="hero">
+            <h1>🌱 ПОСЛЕДНИЙ ПОЛИВ 🌸</h1>
+            <p>Садоводческая виселица | Угадай слово, спаси цветок</p>
+        </div>
+
+        <div class="rules-grid">
+            <div class="rule-card">
+                <h3>🌸 Как играть?</h3>
+                <p>Угадывайте буквы в загаданном слове. Каждая ошибка — цветок теряет лепесток. Угадайте слово до того, как он завянет!</p>
+            </div>
+            <div class="rule-card">
+                <h3>⚡ Очки</h3>
+                <p>+10 за букву, +50 за досрочное угадывание, -5 за ошибку. Порог победы: 150 очков, поражение при &lt;30.</p>
+            </div>
+            <div class="rule-card">
+                <h3>💡 Подсказки</h3>
+                <p>3 подсказки за игру. Откроют одну случайную букву. Комбо (2+ букв подряд) заставит цветок светиться!</p>
+            </div>
+        </div>
+
+        <div class="settings-panel">
+            <h2>🍃 Настройки сада</h2>
+            <div class="setting-row">
+                <label>🌿 Сложность (лепестки):</label>
+                <select id="difficulty">
+                    <option value="easy">Лёгкая — Роза (7 ошибок)</option>
+                    <option value="normal" selected>Нормальная — Ромашка (5 ошибок)</option>
+                    <option value="hard">Сложная — Колокольчик (3 ошибки)</option>
+                </select>
+            </div>
+            <div class="setting-row">
+                <label>🎨 Цветочная тема:</label>
+                <select id="visual-theme">
+                    <option value="pixel">Пиксельный сад</option>
+                    <option value="soft">Мягкий акварель</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <button id="start-game-btn" class="start-btn">🌺 НАЧАТЬ ИГРУ 🌺</button>
+        </div>
+
+        <div class="nav-links">
+            <a href="achievements.html" class="nav-link">🏆 Достижения</a>
+        </div>
+    </div>
+
+    <script src="music.js"></script>
+    <script>
+        // Инициализация музыки для index.html (start.mp3)
+        const music = initPageMusic('start.mp3', 'index_music');
+        
+        // Для отладки - проверим что музыка создалась
+        console.log('Music initialized on index page');
+        
+        // Сохранение настроек игры и переход
+        document.getElementById('start-game-btn').addEventListener('click', () => {
+            const difficulty = document.getElementById('difficulty').value;
+            const visualTheme = document.getElementById('visual-theme').value;
+            localStorage.setItem('gameSettings', JSON.stringify({ difficulty, visualTheme }));
+            window.location.href = 'game.html';
+        });
+
+        // Тёмная тема
+        const toggle = document.getElementById('theme-toggle');
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        if (currentTheme === 'dark') document.body.classList.add('dark');
+        if (currentTheme === 'dark') toggle.checked = true;
+        toggle.addEventListener('change', () => {
+            if (toggle.checked) {
+                document.body.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    </script>
+</body>
+</html>
