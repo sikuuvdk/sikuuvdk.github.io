@@ -17,8 +17,6 @@
             </label>
             <span>🌙</span>
         </div>
-
-        <!-- Панель управления музыкой -->
         <div style="display: flex; justify-content: flex-end; align-items: center; gap: 15px; margin-bottom: 20px; padding: 8px 16px; background: var(--card-bg); clip-path: polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px);">
             <span>🎵</span>
             <label class="theme-switch" style="width: 40px;">
@@ -30,12 +28,10 @@
             <input type="range" id="volume-slider" min="0" max="100" value="50" style="width: 100px;">
             <span id="volume-value">50%</span>
         </div>
-
         <div class="hero">
             <h1>🌱 ПОСЛЕДНИЙ ПОЛИВ 🌸</h1>
             <p>Садоводческая виселица | Угадай слово, спаси цветок</p>
         </div>
-
         <div class="rules-grid">
             <div class="rule-card">
                 <h3>🌸 Как играть?</h3>
@@ -50,7 +46,6 @@
                 <p>3 подсказки за игру. Откроют одну случайную букву. Комбо (2+ букв подряд) заставит цветок светиться!</p>
             </div>
         </div>
-
         <div class="settings-panel">
             <h2>🍃 Настройки сада</h2>
             <div class="setting-row">
@@ -69,39 +64,87 @@
                 </select>
             </div>
         </div>
-
         <div style="text-align: center;">
             <button id="start-game-btn" class="start-btn">🌺 НАЧАТЬ ИГРУ 🌺</button>
         </div>
-
         <div class="nav-links">
             <a href="achievements.html" class="nav-link">🏆 Достижения</a>
         </div>
     </div>
-
-    <script src="music.js"></script>
     <script>
-        // Инициализация музыки для index.html (start.mp3)
-        const music = initPageMusic('start.mp3', 'index_music');
+        const audio = new Audio('start.mp3');
+        audio.loop = true;
         
-        // Для отладки - проверим что музыка создалась
-        console.log('Music initialized on index page');
+        const musicToggle = document.getElementById('music-toggle');
+        const volumeSlider = document.getElementById('volume-slider');
+        const volumeValue = document.getElementById('volume-value');
+        let musicPlaying = localStorage.getItem('index_music_playing') === 'true';
+        let currentVolume = localStorage.getItem('index_music_volume');
         
-        // Сохранение настроек игры и переход
+        if (currentVolume !== null) {
+            audio.volume = currentVolume / 100;
+            volumeSlider.value = currentVolume;
+            volumeValue.textContent = currentVolume + '%';
+        } else {
+            audio.volume = 0.5;
+            volumeSlider.value = 50;
+            volumeValue.textContent = '50%';
+        }
+        
+        musicToggle.checked = musicPlaying;
+        function startMusic() {
+            audio.play().then(() => {
+                musicPlaying = true;
+                localStorage.setItem('index_music_playing', 'true');
+            }).catch(e => {
+                console.log('Не удалось запустить музыку:', e);
+                musicPlaying = false;
+                musicToggle.checked = false;
+                localStorage.setItem('index_music_playing', 'false');
+            });
+        }
+        
+        function stopMusic() {
+            audio.pause();
+            musicPlaying = false;
+            localStorage.setItem('index_music_playing', 'false');
+        }
+        musicToggle.addEventListener('change', function() {
+            if (musicToggle.checked) {
+                startMusic();
+            } else {
+                stopMusic();
+            }
+        });
+        volumeSlider.addEventListener('input', function(e) {
+            const val = parseInt(e.target.value);
+            audio.volume = val / 100;
+            volumeValue.textContent = val + '%';
+            localStorage.setItem('index_music_volume', val);
+        });
+        if (musicPlaying) {
+            const playOnFirstInteraction = function() {
+                if (musicToggle.checked) {
+                    audio.play().catch(e => console.log('Play attempt failed'));
+                }
+                document.removeEventListener('click', playOnFirstInteraction);
+                document.removeEventListener('keydown', playOnFirstInteraction);
+            };
+            document.addEventListener('click', playOnFirstInteraction);
+            document.addEventListener('keydown', playOnFirstInteraction);
+        }
         document.getElementById('start-game-btn').addEventListener('click', () => {
             const difficulty = document.getElementById('difficulty').value;
             const visualTheme = document.getElementById('visual-theme').value;
             localStorage.setItem('gameSettings', JSON.stringify({ difficulty, visualTheme }));
             window.location.href = 'game.html';
         });
-
-        // Тёмная тема
-        const toggle = document.getElementById('theme-toggle');
+        const themeToggle = document.getElementById('theme-toggle');
         const currentTheme = localStorage.getItem('theme') || 'light';
         if (currentTheme === 'dark') document.body.classList.add('dark');
-        if (currentTheme === 'dark') toggle.checked = true;
-        toggle.addEventListener('change', () => {
-            if (toggle.checked) {
+        if (currentTheme === 'dark') themeToggle.checked = true;
+        themeToggle.addEventListener('change', () => {
+            if (themeToggle.checked) {
                 document.body.classList.add('dark');
                 localStorage.setItem('theme', 'dark');
             } else {

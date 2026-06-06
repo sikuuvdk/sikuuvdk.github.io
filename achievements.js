@@ -5,7 +5,6 @@ const achievementsData = [
     { id: "allHintsUsed", name: "Любопытный садовник", desc: "Использовать все 3 подсказки за игру", icon: "🔍", check: (a) => a.allHintsUsed === true },
     { id: "comboMaster", name: "Цветочный экстаз", desc: "Сделать комбо из 4+ букв подряд", icon: "✨", check: (a) => a.comboMaster === true }
 ];
-
 function renderAchievements() {
     const data = JSON.parse(localStorage.getItem('gameAchievements')) || { maxScore:0, loseCount:0, noHintWin:false, allHintsUsed:false, comboMaster:false };
     const container = document.getElementById('achievements-list');
@@ -24,7 +23,6 @@ function renderAchievements() {
         container.appendChild(card);
     });
 }
-
 const toggle = document.getElementById('theme-toggle');
 if(toggle) {
     const curr = localStorage.getItem('theme');

@@ -6,6 +6,68 @@
     <title>Игра | Последний полив</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .flower-area {
+            background-image: url('background-game.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .flower-image {
+            width: 80%;
+            max-width: 280px;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+            transition: all 0.2s ease;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            filter: drop-shadow(5px 5px 0 var(--shadow-color));
+        }
+        .flower-image.glow {
+            animation: pulse 0.6s infinite;
+            filter: drop-shadow(0 0 15px gold) drop-shadow(5px 5px 0 var(--shadow-color));
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.08); opacity: 0.9; }
+        }
+        #flower-emoji {
+            display: none;
+        }
+        .flower-image-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        #petals-count {
+            background: var(--card-bg);
+            padding: 8px 16px;
+            margin-top: 10px;
+            font-weight: bold;
+            box-shadow: 5px 5px 0 var(--shadow-color);
+            display: inline-block;
+        }
+        #combo-indicator {
+            margin-top: 10px;
+            font-weight: bold;
+            color: var(--accent-color);
+            text-shadow: 2px 2px 0 var(--shadow-color);
+        }
+        .hint-btn {
+            margin-top: 15px;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -17,8 +79,6 @@
         </label>
         <span>🌙</span>
     </div>
-    
-    <!-- Панель управления музыкой -->
     <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; padding: 8px 16px; background: var(--card-bg); clip-path: polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px);">
         <a href="index.html" class="nav-link">← В сад</a>
         <div style="display: flex; align-items: center; gap: 10px;">
@@ -34,12 +94,12 @@
         </div>
         <a href="achievements.html" class="nav-link">🏆 Достижения</a>
     </div>
-    
     <h2 style="text-align:center;">🌼 Поливай цветок знаниями 🌼</h2>
-    
     <div class="game-layout">
         <div class="flower-area">
-            <div id="flower-emoji">🌻</div>
+            <div class="flower-image-container">
+                <img id="flower-image" class="flower-image" src="rose.png" alt="Цветок">
+            </div>
             <div id="petals-count">Лепестков: 5</div>
             <div id="combo-indicator" style="margin-top:10px;"></div>
             <button id="hint-button" class="hint-btn" style="margin-top: 12px;">💡 Подсказка (3)</button>
@@ -59,15 +119,185 @@
         </div>
     </div>
 </div>
-
-<script src="music.js"></script>
 <script src="words.js"></script>
 <script src="game.js"></script>
-
 <script>
-    // Инициализация музыки для game.html (sound.mp3)
-    const music = initPageMusic('sound.mp3', 'game_music');
-    console.log('Music initialized on game page');
+    (function() {
+        const gameAudio = new Audio('game.mp3');
+        gameAudio.loop = true;
+        const musicToggle = document.getElementById('music-toggle');
+        const volumeSlider = document.getElementById('volume-slider');
+        const volumeValue = document.getElementById('volume-value');
+        if (!musicToggle || !volumeSlider) {
+            console.error('Элементы управления музыкой не найдены');
+            return;
+        }
+        let isMusicPlaying = localStorage.getItem('game_music_playing') === 'true';
+        let savedVolume = localStorage.getItem('game_music_volume');
+        
+        if (savedVolume !== null) {
+            gameAudio.volume = savedVolume / 100;
+            volumeSlider.value = savedVolume;
+            volumeValue.textContent = savedVolume + '%';
+        } else {
+            gameAudio.volume = 0.5;
+            volumeSlider.value = 50;
+            volumeValue.textContent = '50%';
+        }
+        musicToggle.checked = isMusicPlaying;
+        function startGameMusic() {
+            gameAudio.play().then(() => {
+                isMusicPlaying = true;
+                localStorage.setItem('game_music_playing', 'true');
+                console.log('Музыка запущена');
+            }).catch(error => {
+                console.log('Ошибка запуска музыки:', error);
+                isMusicPlaying = false;
+                musicToggle.checked = false;
+                localStorage.setItem('game_music_playing', 'false');
+            });
+        }
+        function stopGameMusic() {
+            gameAudio.pause();
+            isMusicPlaying = false;
+            localStorage.setItem('game_music_playing', 'false');
+            console.log('Музыка остановлена');
+        }
+        musicToggle.onclick = function(e) {
+            console.log('Клик по кнопке музыки, новое состояние:', musicToggle.checked);
+            if (musicToggle.checked) {
+                startGameMusic();
+            } else {
+                stopGameMusic();
+            }
+        };
+        volumeSlider.oninput = function(e) {
+            const val = parseInt(e.target.value);
+            gameAudio.volume = val / 100;
+            volumeValue.textContent = val + '%';
+            localStorage.setItem('game_music_volume', val);
+            console.log('Громкость изменена:', val);
+        };
+        
+        if (isMusicPlaying) {
+            const playOnInteraction = function() {
+                if (musicToggle.checked) {
+                    gameAudio.play().catch(e => console.log('Автозапуск заблокирован'));
+                }
+                document.removeEventListener('click', playOnInteraction);
+                document.removeEventListener('keydown', playOnInteraction);
+            };
+            document.addEventListener('click', playOnInteraction);
+            document.addEventListener('keydown', playOnInteraction);
+        }
+        console.log('Музыкальный скрипт инициализирован, состояние:', isMusicPlaying);
+    })();
+    const themeToggle = document.getElementById('theme-toggle');
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    if (currentTheme === 'dark') document.body.classList.add('dark');
+    if (currentTheme === 'dark') themeToggle.checked = true;
+    themeToggle.addEventListener('change', () => {
+        if (themeToggle.checked) {
+            document.body.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.body.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+        }
+    });
+    const originalLoadSettings = window.loadSettings;
+    function updateFlowerImageByDifficulty() {
+        const settings = JSON.parse(localStorage.getItem('gameSettings'));
+        const flowerImage = document.getElementById('flower-image');
+        if (!flowerImage) return;
+        
+        let imageName = 'rose.png';
+        
+        if (settings) {
+            switch(settings.difficulty) {
+                case 'easy':
+                    imageName = 'rose.png';
+                    break;
+                case 'normal':
+                    imageName = 'chamomile.png';
+                    break;
+                case 'hard':
+                    imageName = 'bell.png';
+                    break;
+                default:
+                    imageName = 'chamomile.png';
+            }
+        } else {
+            imageName = 'chamomile.png';
+        }
+        
+        flowerImage.src = imageName;
+    }
+    const originalUpdateUI = window.updateUI;
+    window.updateUI = function() {
+        if (originalUpdateUI) {
+            originalUpdateUI();
+        }
+        const flowerImage = document.getElementById('flower-image');
+        const comboValue = parseInt(document.getElementById('combo')?.textContent || '0');
+        
+        if (flowerImage) {
+            if (comboValue >= 2) {
+                flowerImage.classList.add('glow');
+            } else {
+                flowerImage.classList.remove('glow');
+            }
+        }
+    };
+    window.loadSettings = function() {
+        if (originalLoadSettings) {
+            originalLoadSettings();
+        }
+        updateFlowerImageByDifficulty();
+    };
+    const originalInitGame = window.initGame;
+    
+    window.initGame = function() {
+        if (originalInitGame) {
+            originalInitGame();
+        }
+        updateFlowerImageByDifficulty();
+        const flowerImage = document.getElementById('flower-image');
+        if (flowerImage) {
+            flowerImage.classList.remove('glow');
+        }
+    };
+    setTimeout(() => {
+        updateFlowerImageByDifficulty();
+        const checkComboInterval = setInterval(() => {
+            const comboValue = parseInt(document.getElementById('combo')?.textContent || '0');
+            const flowerImage = document.getElementById('flower-image');
+            const comboIndicator = document.getElementById('combo-indicator');
+            if (flowerImage) {
+                if (comboValue >= 2) {
+                    flowerImage.classList.add('glow');
+                    if (comboIndicator) comboIndicator.innerHTML = "✨ Цветок сияет (комбо)! ✨";
+                } else {
+                    flowerImage.classList.remove('glow');
+                    if (comboIndicator && comboValue < 2) comboIndicator.innerHTML = "";
+                }
+            }
+        }, 100);
+        window.clearFlowerInterval = function() {
+            clearInterval(checkComboInterval);
+        };
+    }, 50);
+    const resetGameBtn = document.getElementById('reset-game-btn');
+    if (resetGameBtn) {
+        const originalClickHandler = resetGameBtn.onclick;
+        resetGameBtn.addEventListener('click', function() {
+            setTimeout(() => {
+                updateFlowerImageByDifficulty();
+                const flowerImage = document.getElementById('flower-image');
+                if (flowerImage) flowerImage.classList.remove('glow');
+            }, 10);
+        });
+    }
 </script>
 </body>
 </html>

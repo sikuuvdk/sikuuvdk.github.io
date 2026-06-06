@@ -5,7 +5,6 @@ const WORDS_DB = [
     { word: "ОРАНЖЕРЕЯ", fact: "Первые оранжереи появились в Древнем Риме для выращивания экзотических фруктов." },
     { word: "ФЛОРАРИУМ", fact: "Флорариум — это сад в стекле, который поливают раз в несколько месяцев." }
 ];
-
 function getRandomWord() {
     return WORDS_DB[Math.floor(Math.random() * WORDS_DB.length)];
 }

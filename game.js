@@ -9,22 +9,21 @@ let gameActive = true;
 let currentDifficulty = "normal";
 let maxMistakes = 5;
 let currentFlower = "🌻";
-
-const flowerByDifficulty = { easy: { max:7, emoji:"🌹" }, normal: { max:5, emoji:"🌼" }, hard:{ max:3, emoji:"🔔" } };
-
+const flowerByDifficulty = { easy: { max:7, emoji:"🌹", img:"rose.png" }, normal: { max:5, emoji:"🌼", img:"chamomile.png" }, hard:{ max:3, emoji:"🔔", img:"bell.png" } };
 function loadSettings() {
     const settings = JSON.parse(localStorage.getItem('gameSettings'));
     if(settings) {
         currentDifficulty = settings.difficulty;
         maxMistakes = flowerByDifficulty[currentDifficulty].max;
         currentFlower = flowerByDifficulty[currentDifficulty].emoji;
-        const flowerEmoji = document.getElementById('flower-emoji');
-        if(flowerEmoji) flowerEmoji.textContent = currentFlower;
+        const flowerImage = document.getElementById('flower-image');
+        if(flowerImage) {
+            flowerImage.src = flowerByDifficulty[currentDifficulty].img;
+        }
         const petalsCount = document.getElementById('petals-count');
         if(petalsCount) petalsCount.textContent = `Лепестков: ${maxMistakes - mistakes}`;
     }
 }
-
 function initGame() {
     currentWordObj = getRandomWord();
     currentWord = currentWordObj.word.toUpperCase();
@@ -43,10 +42,10 @@ function initGame() {
     }
     const comboIndicator = document.getElementById('combo-indicator');
     if(comboIndicator) comboIndicator.innerHTML = "";
-    const flowerEmoji = document.getElementById('flower-emoji');
-    if(flowerEmoji) flowerEmoji.classList.remove('glow');
+    
+    const flowerImage = document.getElementById('flower-image');
+    if(flowerImage) flowerImage.classList.remove('glow');
 }
-
 function updateUI() {
     if(!gameActive) return;
     const masked = currentWord.split('').map(l => guessedLetters.includes(l) ? l : '_').join(' ');
@@ -60,17 +59,15 @@ function updateUI() {
     if(petalsSpan) petalsSpan.textContent = `Лепестков: ${maxMistakes - mistakes}`;
     const comboSpan = document.getElementById('combo');
     if(comboSpan) comboSpan.textContent = combo;
-    
-    const flowerEmoji = document.getElementById('flower-emoji');
+    const flowerImage = document.getElementById('flower-image');
     const comboIndicator = document.getElementById('combo-indicator');
     if(combo >= 2) {
-        if(flowerEmoji) flowerEmoji.classList.add('glow');
+        if(flowerImage) flowerImage.classList.add('glow');
         if(comboIndicator) comboIndicator.innerHTML = "✨ Цветок сияет (комбо)! ✨";
     } else {
-        if(flowerEmoji) flowerEmoji.classList.remove('glow');
+        if(flowerImage) flowerImage.classList.remove('glow');
         if(comboIndicator) comboIndicator.innerHTML = "";
     }
-    
     if(currentWord.split('').every(l => guessedLetters.includes(l))) {
         gameActive = false;
         score += 50;
@@ -91,7 +88,6 @@ function updateUI() {
         updateAchievements();
     }
 }
-
 function handleGuess(letter) {
     if(!gameActive) return;
     if(guessedLetters.includes(letter)) return;
@@ -112,10 +108,10 @@ function handleGuess(letter) {
         score = Math.max(0, score - 5);
         combo = 0;
         updateUI();
-        const flowerEmoji = document.getElementById('flower-emoji');
-        if(flowerEmoji) {
-            flowerEmoji.style.transform = "rotate(5deg)";
-            setTimeout(() => { if(flowerEmoji) flowerEmoji.style.transform = ""; }, 200);
+        const flowerImage = document.getElementById('flower-image');
+        if(flowerImage) {
+            flowerImage.style.transform = "rotate(5deg)";
+            setTimeout(() => { if(flowerImage) flowerImage.style.transform = ""; }, 200);
         }
         if(mistakes >= 2 && mistakes % 2 === 0) {
             fetchFactAsync(currentWordObj.fact);
@@ -124,7 +120,6 @@ function handleGuess(letter) {
     updateKeyboardUI();
     updateUI();
 }
-
 function fetchFactAsync(factText) {
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -133,11 +128,9 @@ function fetchFactAsync(factText) {
         }, 100);
     });
 }
-
 function showModal(message, isVictory=false, autoClose=3000) {
     const existingOverlay = document.querySelector('.overlay');
     if(existingOverlay) return;
-    
     const overlay = document.createElement('div');
     overlay.className = 'overlay';
     const modal = document.createElement('div');
@@ -153,7 +146,6 @@ function showModal(message, isVictory=false, autoClose=3000) {
     if(closeBtn) closeBtn.onclick = close;
     if(autoClose && !isVictory) setTimeout(close, autoClose);
 }
-
 function updateKeyboardUI() {
     const keys = document.querySelectorAll('.key');
     keys.forEach(key => {
@@ -163,7 +155,6 @@ function updateKeyboardUI() {
         }
     });
 }
-
 function generateKeyboard() {
     const ruLetters = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ".split('');
     const kb = document.getElementById('keyboard');
@@ -178,7 +169,6 @@ function generateKeyboard() {
         kb.appendChild(btn);
     });
 }
-
 const guessBtn = document.getElementById('guess-word-btn');
 if(guessBtn) {
     guessBtn.addEventListener('click', () => {
@@ -200,7 +190,6 @@ if(guessBtn) {
         }
     });
 }
-
 const hintBtn = document.getElementById('hint-button');
 if(hintBtn) {
     hintBtn.addEventListener('click', () => {
@@ -220,14 +209,12 @@ if(hintBtn) {
         }
     });
 }
-
 const resetBtn = document.getElementById('reset-game-btn');
 if(resetBtn) {
     resetBtn.addEventListener('click', () => {
         initGame();
     });
 }
-
 function updateAchievements() {
     let achieves = JSON.parse(localStorage.getItem('gameAchievements')) || {
         maxScore: 0,
@@ -243,7 +230,6 @@ function updateAchievements() {
     if(combo >= 4) achieves.comboMaster = true;
     localStorage.setItem('gameAchievements', JSON.stringify(achieves));
 }
-
 const toggleTheme = document.getElementById('theme-toggle');
 if(toggleTheme) {
     const curr = localStorage.getItem('theme');
@@ -254,6 +240,5 @@ if(toggleTheme) {
         else { document.body.classList.remove('dark'); localStorage.setItem('theme','light');}
     });
 }
-
 loadSettings();
 initGame();
