@@ -365,7 +365,7 @@ setTimeout(() => {
         if(img) {
             if(cv >= 2) {
                 img.classList.add('glow');
-                if(ci) ci.innerHTML = "✨ Цветок сияет! ✨";
+                if(ci) ci.innerHTML = "Цветок сияет!";
             } else {
                 img.classList.remove('glow');
                 if(ci && cv < 2) ci.innerHTML = "";
