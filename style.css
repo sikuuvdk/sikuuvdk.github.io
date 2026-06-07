@@ -108,25 +108,18 @@ button:active, .nav-link:active, .key:active, .start-btn:active {
     padding: 0.5rem 1.2rem;
     color: var(--text-color);
 }
-
-/* Стиль для посещённых ссылок */
 .nav-link:visited {
     color: var(--visited-link);
 }
-
-/* Стиль для всех ссылок в навигации, включая уже посещённые */
 a.nav-link:link {
     color: var(--text-color);
 }
-
 a.nav-link:visited {
     color: var(--visited-link);
 }
-
 a.nav-link:hover {
     color: var(--accent-color);
 }
-
 .keyboard {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
@@ -145,7 +138,6 @@ a.nav-link:hover {
     text-decoration: line-through;
     pointer-events: none;
 }
-
 .key:active {
     transform: translate(3px, 3px);
     box-shadow: 2px 2px 0 var(--shadow-color);
@@ -369,4 +361,163 @@ input:checked + .slider {
 }
 input:checked + .slider:before {
     transform: translateX(26px);
+}
+.flower-area {
+    background-image: url('images/background-game.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.flower-image {
+    width: 80%;
+    max-width: 280px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    transition: all 0.2s ease;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    filter: drop-shadow(5px 5px 0 var(--shadow-color));
+    position: relative;
+    z-index: 2;
+}
+.flower-image.glow {
+    animation: pulse 0.6s infinite;
+    filter: drop-shadow(0 0 15px gold) drop-shadow(5px 5px 0 var(--shadow-color));
+}
+#flower-emoji {
+    display: none;
+}
+.flower-image-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+#petals-count {
+    background: var(--card-bg);
+    padding: 8px 16px;
+    margin-top: 10px;
+    font-weight: bold;
+    box-shadow: 5px 5px 0 var(--shadow-color);
+    display: inline-block;
+    position: relative;
+    z-index: 2;
+}
+#combo-indicator {
+    margin-top: 10px;
+    font-weight: bold;
+    color: var(--accent-color);
+    text-shadow: 2px 2px 0 var(--shadow-color);
+    position: relative;
+    z-index: 2;
+}
+.hint-btn {
+    margin-top: 15px;
+    position: relative;
+    z-index: 2;
+}
+.falling-petal {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    pointer-events: none;
+    z-index: 10;
+    animation: fallAndFade 2s ease-out forwards;
+}
+@keyframes fallAndFade {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(350px) rotate(200deg);
+        opacity: 0;
+    }
+}
+.word-description {
+    background: var(--card-bg);
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    box-shadow: 6px 6px 0 var(--shadow-color);
+    font-family: 'VT323', 'Courier New', monospace;
+    font-size: 1.1rem;
+}
+.word-description i {
+    color: var(--accent-color);
+}
+.fact-btn {
+    background: #66bb66;
+    color: white;
+    margin-top: 10px;
+}
+.fact-btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 2px 2px 0 var(--shadow-color);
+}
+.fact-btn-hidden {
+    display: none;
+}
+.game-toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--card-bg);
+    color: var(--text-color);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Press Start 2P', monospace;
+    z-index: 1000;
+    box-shadow: 6px 6px 0 var(--shadow-color);
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    max-width: 90%;
+    text-align: center;
+    white-space: nowrap;
+}
+@media (max-width: 600px) {
+    .game-toast {
+        white-space: normal;
+        font-size: 10px;
+        padding: 10px 16px;
+    }
+}
+.game-toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+.game-toast.win {
+    border-left: 4px solid #4caf50;
+    color: #4caf50;
+}
+.game-toast.lose {
+    border-left: 4px solid #f44336;
+    color: #f44336;
+}
+.game-toast.fact {
+    border-left: 4px solid #ffb347;
+    color: #ffb347;
+}
+.game-toast.error {
+    border-left: 4px solid #ff6b6b;
+    color: #ff6b6b;
+}
+.game-toast.info {
+    border-left: 4px solid #66bb66;
 }

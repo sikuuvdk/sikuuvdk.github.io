@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Достижения | Садовод</title>
+    <script src="js/achievements.js" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -17,97 +18,25 @@
         </label>
         <span>🌙</span>
     </div>
-    <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; padding: 8px 16px; background: var(--card-bg); clip-path: polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px);">
-        <a href="index.html" class="nav-link">🏠 Главная</a>
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <span>🎵</span>
-            <label class="theme-switch" style="width: 40px;">
-                <input type="checkbox" id="music-toggle">
-                <span class="slider round"></span>
-            </label>
-            <span>🔇</span>
-            <span>🔊</span>
-            <input type="range" id="volume-slider" min="0" max="100" value="50" style="width: 100px;">
-            <span id="volume-value">50%</span>
+    <div class="nav-bar">
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">🏠 Главная</a>
+            <div class="music-controls">
+                <span>🎵</span>
+                <label class="theme-switch" style="width: 40px;">
+                    <input type="checkbox" id="music-toggle">
+                    <span class="slider round"></span>
+                </label>
+                <span>🔇</span>
+                <span>🔊</span>
+                <input type="range" id="volume-slider" min="0" max="100" value="50" style="width: 100px;">
+                <span id="volume-value">50%</span>
+            </div>
+            <a href="game.html" class="nav-link">🎮 Играть</a>
         </div>
-        <a href="game.html" class="nav-link">🎮 Играть</a>
     </div>
     <h1 style="text-align:center;">🏆 Садовые трофеи 🏆</h1>
     <div id="achievements-list" class="achievements-grid"></div>
 </div>
-<script src="js/achievements.js"></script>
-<script>
-    const audio = new Audio('audio/achievements.mp3');
-    audio.loop = true;
-    const musicToggle = document.getElementById('music-toggle');
-    const volumeSlider = document.getElementById('volume-slider');
-    const volumeValue = document.getElementById('volume-value');
-    let musicPlaying = localStorage.getItem('achievements_music_playing') === 'true';
-    let currentVolume = localStorage.getItem('achievements_music_volume');
-    if (currentVolume !== null) {
-        audio.volume = currentVolume / 100;
-        volumeSlider.value = currentVolume;
-        volumeValue.textContent = currentVolume + '%';
-    } else {
-        audio.volume = 0.5;
-        volumeSlider.value = 50;
-        volumeValue.textContent = '50%';
-    }
-    musicToggle.checked = musicPlaying;
-    function startMusic() {
-        audio.play().then(() => {
-            musicPlaying = true;
-            localStorage.setItem('achievements_music_playing', 'true');
-        }).catch(e => {
-            console.log('Не удалось запустить музыку:', e);
-            musicPlaying = false;
-            musicToggle.checked = false;
-            localStorage.setItem('achievements_music_playing', 'false');
-        });
-    }
-    function stopMusic() {
-        audio.pause();
-        musicPlaying = false;
-        localStorage.setItem('achievements_music_playing', 'false');
-    }
-    musicToggle.addEventListener('change', function() {
-        if (musicToggle.checked) {
-            startMusic();
-        } else {
-            stopMusic();
-        }
-    });
-    volumeSlider.addEventListener('input', function(e) {
-        const val = parseInt(e.target.value);
-        audio.volume = val / 100;
-        volumeValue.textContent = val + '%';
-        localStorage.setItem('achievements_music_volume', val);
-    });
-    if (musicPlaying) {
-        const playOnFirstInteraction = function() {
-            if (musicToggle.checked) {
-                audio.play().catch(e => console.log('Play attempt failed'));
-            }
-            document.removeEventListener('click', playOnFirstInteraction);
-            document.removeEventListener('keydown', playOnFirstInteraction);
-        };
-        document.addEventListener('click', playOnFirstInteraction);
-        document.addEventListener('keydown', playOnFirstInteraction);
-    }
-    const themeToggle = document.getElementById('theme-toggle');
-    const currentTheme = localStorage.getItem('theme') || 'light';
-    if (currentTheme === 'dark') document.body.classList.add('dark');
-    if (currentTheme === 'dark') themeToggle.checked = true;
-    themeToggle.addEventListener('change', () => {
-        if (themeToggle.checked) {
-            document.body.classList.add('dark');
-            localStorage.setItem('theme', 'dark');
-        } else {
-            document.body.classList.remove('dark');
-            localStorage.setItem('theme', 'light');
-        }
-    });
-    renderAchievements();
-</script>
 </body>
 </html>
