@@ -3,10 +3,12 @@ const achievementsData = [
     { id: "loseCount", name: "Философ увядания", desc: "Проиграть 3 раза", icon: "🍂", check: (a) => a.loseCount >= 3 },
     { id: "noHintWin", name: "Чистый сад", desc: "Победить без подсказок", icon: "🌱", check: (a) => a.noHintWin === true },
     { id: "allHintsUsed", name: "Любопытный садовник", desc: "Использовать все 3 подсказки за игру", icon: "🔍", check: (a) => a.allHintsUsed === true },
-    { id: "comboMaster", name: "Цветочный экстаз", desc: "Сделать комбо из 4+ букв подряд", icon: "✨", check: (a) => a.comboMaster === true }
+    { id: "comboMaster", name: "Цветочный экстаз", desc: "Сделать комбо из 4+ букв подряд", icon: "✨", check: (a) => a.comboMaster === true },
+    { id: "perfectGame", name: "Идеальный сад", desc: "Победить, не допустив ни одной ошибки", icon: "🏆", check: (a) => a.perfectGame === true }
 ];
+
 function renderAchievements() {
-    const data = JSON.parse(localStorage.getItem('gameAchievements')) || { maxScore:0, loseCount:0, noHintWin:false, allHintsUsed:false, comboMaster:false };
+    const data = JSON.parse(localStorage.getItem('gameAchievements')) || { maxScore:0, loseCount:0, noHintWin:false, allHintsUsed:false, comboMaster:false, perfectGame:false };
     const container = document.getElementById('achievements-list');
     if(!container) return;
     container.innerHTML = '';
@@ -23,6 +25,7 @@ function renderAchievements() {
         container.appendChild(card);
     });
 }
+
 const toggle = document.getElementById('theme-toggle');
 if(toggle) {
     const curr = localStorage.getItem('theme');
@@ -33,4 +36,5 @@ if(toggle) {
         else { document.body.classList.remove('dark'); localStorage.setItem('theme','light');}
     });
 }
+
 renderAchievements();

@@ -8,6 +8,7 @@
     --wrong-color: #ff6b6b;
     --correct-color: #befac0;
     --flower-glow: 0 0 15px rgba(255, 180, 70, 0.8);
+    --visited-link: #5fd35f;
 }
 body.dark {
     --bg-color: #1e2a1e;
@@ -16,6 +17,7 @@ body.dark {
     --border-color: #6b8c5a;
     --shadow-color: #0f1f0f;
     --accent-color: #ffaa44;
+    --visited-link: #5fd35f;
 }
 * {
     font-family: 'Press Start 2P', 'Courier New', monospace;
@@ -25,7 +27,7 @@ body.dark {
     padding: 0;
 }
 body {
-    background-image: url('background.png');
+    background-image: url('images/background.png');
     color: var(--text-color);
     transition: all 0.3s ease;
     padding: 20px;
@@ -104,7 +106,27 @@ button:active, .nav-link:active, .key:active, .start-btn:active {
     text-decoration: none;
     display: inline-block;
     padding: 0.5rem 1.2rem;
+    color: var(--text-color);
 }
+
+/* Стиль для посещённых ссылок */
+.nav-link:visited {
+    color: var(--visited-link);
+}
+
+/* Стиль для всех ссылок в навигации, включая уже посещённые */
+a.nav-link:link {
+    color: var(--text-color);
+}
+
+a.nav-link:visited {
+    color: var(--visited-link);
+}
+
+a.nav-link:hover {
+    color: var(--accent-color);
+}
+
 .keyboard {
     display: grid;
     grid-template-columns: repeat(9, 1fr);

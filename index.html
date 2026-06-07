@@ -34,45 +34,38 @@
         </div>
         <div class="rules-grid">
             <div class="rule-card">
-                <h3>🌸 Как играть?</h3>
+                <h3>Как играть?</h3>
                 <p>Угадывайте буквы в загаданном слове. Каждая ошибка — цветок теряет лепесток. Угадайте слово до того, как он завянет!</p>
             </div>
             <div class="rule-card">
-                <h3>⚡ Очки</h3>
+                <h3>Очки</h3>
                 <p>+10 за букву, +50 за досрочное угадывание, -5 за ошибку. Порог победы: 150 очков, поражение при &lt;30.</p>
             </div>
             <div class="rule-card">
-                <h3>💡 Подсказки</h3>
+                <h3>Подсказки</h3>
                 <p>3 подсказки за игру. Откроют одну случайную букву. Комбо (2+ букв подряд) заставит цветок светиться!</p>
             </div>
         </div>
         <div class="settings-panel">
-            <h2>🍃 Настройки сада</h2>
+            <h2>Настройки сада</h2>
             <div class="setting-row">
-                <label>🌿 Сложность (лепестки):</label>
+                <label>Сложность:</label>
                 <select id="difficulty">
                     <option value="easy">Лёгкая — Роза (7 ошибок)</option>
                     <option value="normal" selected>Нормальная — Ромашка (5 ошибок)</option>
                     <option value="hard">Сложная — Колокольчик (3 ошибки)</option>
                 </select>
             </div>
-            <div class="setting-row">
-                <label>🎨 Цветочная тема:</label>
-                <select id="visual-theme">
-                    <option value="pixel">Пиксельный сад</option>
-                    <option value="soft">Мягкий акварель</option>
-                </select>
-            </div>
         </div>
         <div style="text-align: center;">
-            <button id="start-game-btn" class="start-btn">🌺 НАЧАТЬ ИГРУ 🌺</button>
+            <button id="start-game-btn" class="start-btn">НАЧАТЬ ИГРУ</button>
         </div>
         <div class="nav-links">
             <a href="achievements.html" class="nav-link">🏆 Достижения</a>
         </div>
     </div>
     <script>
-        const audio = new Audio('start.mp3');
+        const audio = new Audio('audio/start.mp3');
         audio.loop = true;
         
         const musicToggle = document.getElementById('music-toggle');
@@ -135,8 +128,7 @@
         }
         document.getElementById('start-game-btn').addEventListener('click', () => {
             const difficulty = document.getElementById('difficulty').value;
-            const visualTheme = document.getElementById('visual-theme').value;
-            localStorage.setItem('gameSettings', JSON.stringify({ difficulty, visualTheme }));
+            localStorage.setItem('gameSettings', JSON.stringify({ difficulty }));
             window.location.href = 'game.html';
         });
         const themeToggle = document.getElementById('theme-toggle');
